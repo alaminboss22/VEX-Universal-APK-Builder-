@@ -1,0 +1,91 @@
+name: VEX Android Build Worker
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: vex-android-build-worker
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Claim one queued build
+        id: claim
+        env:
+          VEX_WORKER_TOKEN: ${{ secrets.VEX_WORKER_TOKEN }}
+          VEX_API: https://videocut.site.je/api/worker.php
+        run: |
+          test -n "$VEX_WORKER_TOKEN" || { echo "Missing VEX_WORKER_TOKEN repository secret"; exit 1; }
+          curl --fail-with-body --silent --show-error -X POST "$VEX_API" -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" -F action=claim -o claim.json
+          jq -e '.ok == true' claim.json >/dev/null
+          if [ "$(jq -r '.job // empty' claim.json)" = "" ]; then echo "has_job=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "has_job=true" >> "$GITHUB_OUTPUT"
+          echo "id=$(jq -r '.job.id' claim.json)" >> "$GITHUB_OUTPUT"
+          echo "format=$(jq -r '.job.build_format' claim.json)" >> "$GITHUB_OUTPUT"
+          echo "type=$(jq -r '.job.build_type' claim.json)" >> "$GITHUB_OUTPUT"
+          echo "token=$(jq -r '.job.build_token' claim.json)" >> "$GITHUB_OUTPUT"
+          echo "url=$(jq -r '.job.download_url' claim.json)" >> "$GITHUB_OUTPUT"
+      - name: Set up Java
+        if: steps.claim.outputs.has_job == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Download and unpack source
+        if: steps.claim.outputs.has_job == 'true'
+        run: |
+          curl --fail-with-body --silent --show-error "${{ steps.claim.outputs.url }}" -o source.zip
+          mkdir source
+          unzip -q source.zip -d source
+          find source -name gradlew -type f -print -quit > gradle-wrapper-path.txt
+          test -s gradle-wrapper-path.txt || { echo "No Gradle wrapper (gradlew) found in uploaded ZIP"; exit 2; }
+          chmod +x "$(cat gradle-wrapper-path.txt)"
+      - name: Build Android artifact
+        if: steps.claim.outputs.has_job == 'true'
+        id: compile
+        run: |
+          set -o pipefail
+          WRAPPER="$(cat gradle-wrapper-path.txt)"
+          ROOT="$(dirname "$WRAPPER")"
+          cd "$ROOT"
+          if [ "${{ steps.claim.outputs.format }}" = "aab" ]; then
+            TASK="bundle${{ steps.claim.outputs.type == 'release' && 'Release' || 'Debug' }}"
+          else
+            TASK="assemble${{ steps.claim.outputs.type == 'release' && 'Release' || 'Debug' }}"
+          fi
+          ./gradlew --no-daemon "$TASK" 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+          cd "$GITHUB_WORKSPACE"
+          if [ "${{ steps.claim.outputs.format }}" = "aab" ]; then EXT=aab; else EXT=apk; fi
+          find source -type f -path "*/build/outputs/*" -name "*.$EXT" -print -quit > artifact-path.txt
+          test -s artifact-path.txt || { echo "Gradle completed but no .$EXT artifact was found"; exit 3; }
+          echo "artifact=$(cat artifact-path.txt)" >> "$GITHUB_OUTPUT"
+          echo "ext=$EXT" >> "$GITHUB_OUTPUT"
+      - name: Report build success
+        if: steps.claim.outputs.has_job == 'true' && success()
+        env:
+          VEX_WORKER_TOKEN: ${{ secrets.VEX_WORKER_TOKEN }}
+          BUILD_ID: ${{ steps.claim.outputs.id }}
+          BUILD_TOKEN: ${{ steps.claim.outputs.token }}
+          ARTIFACT: ${{ steps.compile.outputs.artifact }}
+          ARTIFACT_EXT: ${{ steps.compile.outputs.ext }}
+        run: |
+          curl --fail-with-body --silent --show-error -X POST https://videocut.site.je/api/worker.php \
+            -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" \
+            -F action=finish -F "build_id=$BUILD_ID" -F "build_token=$BUILD_TOKEN" \
+            -F status=success -F "artifact_ext=$ARTIFACT_EXT" \
+            -F "artifact=@$ARTIFACT" -F "log_text=$(tail -c 50000 build.log 2>/dev/null || true)"
+      - name: Report build failure
+        if: steps.claim.outputs.has_job == 'true' && failure()
+        env:
+          VEX_WORKER_TOKEN: ${{ secrets.VEX_WORKER_TOKEN }}
+          BUILD_ID: ${{ steps.claim.outputs.id }}
+          BUILD_TOKEN: ${{ steps.claim.outputs.token }}
+        run: |
+          curl --silent --show-error -X POST https://videocut.site.je/api/worker.php \
+            -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" \
+            -F action=finish -F "build_id=$BUILD_ID" -F "build_token=$BUILD_TOKEN" \
+            -F status=failed -F "log_text=$(tail -c 50000 build.log 2>/dev/null || echo 'Build failed before Gradle log was created.')"

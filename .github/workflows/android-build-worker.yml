@@ -17,14 +17,10 @@ jobs:
         id: claim
         env:
           VEX_WORKER_TOKEN: ${{ secrets.VEX_WORKER_TOKEN }}
-          VEX_API: https://videocut.site.je/api/worker.php
+          VEX_API: https://shy-queen-d4af.imgur9921.workers.dev/
         run: |
           if [ -z "$VEX_WORKER_TOKEN" ]; then echo "VEX_WORKER_TOKEN secret is not configured yet; skipping worker run."; echo "has_job=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          echo "Testing basic hosting POST support..."
-          curl --http1.1 --retry 2 --retry-all-errors --retry-delay 2 --connect-timeout 20 --max-time 60 --fail-with-body --silent --show-error -X POST https://videocut.site.je/api/post-diagnostic.php -H "Content-Type: application/x-www-form-urlencoded" --data "test=1" -o post-diagnostic.json
-          cat post-diagnostic.json
-          jq -e '.ok == true' post-diagnostic.json >/dev/null
-          echo "Basic POST passed; testing authenticated worker POST..."
+          echo "Testing authenticated Cloudflare worker POST..."
           curl --http1.1 --retry 2 --retry-all-errors --retry-delay 2 --connect-timeout 20 --max-time 60 --fail-with-body --silent --show-error -X POST "$VEX_API" -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" -H "Content-Type: application/x-www-form-urlencoded" --data "action=ping" -o ping.json
           cat ping.json
           jq -e '.ok == true' ping.json >/dev/null
@@ -82,7 +78,7 @@ jobs:
           ARTIFACT: ${{ steps.compile.outputs.artifact }}
           ARTIFACT_EXT: ${{ steps.compile.outputs.ext }}
         run: |
-          curl --fail-with-body --silent --show-error -X POST https://videocut.site.je/api/worker.php \
+          curl --fail-with-body --silent --show-error -X POST "$VEX_API" \
             -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" \
             -F action=finish -F "build_id=$BUILD_ID" -F "build_token=$BUILD_TOKEN" \
             -F status=success -F "artifact_ext=$ARTIFACT_EXT" \
@@ -91,10 +87,11 @@ jobs:
         if: steps.claim.outputs.has_job == 'true' && failure()
         env:
           VEX_WORKER_TOKEN: ${{ secrets.VEX_WORKER_TOKEN }}
+          VEX_API: https://shy-queen-d4af.imgur9921.workers.dev/
           BUILD_ID: ${{ steps.claim.outputs.id }}
           BUILD_TOKEN: ${{ steps.claim.outputs.token }}
         run: |
-          curl --silent --show-error -X POST https://videocut.site.je/api/worker.php \
+          curl --silent --show-error -X POST "$VEX_API" \
             -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" \
             -F action=finish -F "build_id=$BUILD_ID" -F "build_token=$BUILD_TOKEN" \
             -F status=failed -F "log_text=$(tail -c 50000 build.log 2>/dev/null || echo 'Build failed before Gradle log was created.')"

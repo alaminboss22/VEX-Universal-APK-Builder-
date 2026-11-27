@@ -73,3 +73,43 @@ drop.addEventListener("drop",e=>acceptFile(e.dataTransfer.files[0]));
 analyze.addEventListener("click",()=>{if(!selectedFile)return;if(document.body.dataset.authenticated!=="true"){if(window.VEX_REQUIRE_AUTH)window.VEX_REQUIRE_AUTH("upload");return;}toast("Account ready. Secure project upload API is the next step; file has not been uploaded yet.");});
 $("#saveApi").addEventListener("click",()=>{const v=$("#apiUrl").value.trim();if(v&&!/^https?:\/\/.+/i.test(v)){toast("Enter a valid http:// or https:// URL.");return;}$("#apiSaved").textContent="Preview setting noted. No connection test was made.";toast("Setting saved for this page session.");});
 icons();
+
+
+// Live API + database connection indicator. This does not represent build-worker status.
+(function initServerStatus(){
+  const sidebar = document.getElementById("sidebarServerStatus");
+  const top = document.getElementById("topServerStatus");
+  const sideText = document.getElementById("sidebarStatusText");
+  const sideDetail = document.getElementById("sidebarStatusDetail");
+  const topText = document.getElementById("topServerStatusText");
+  if(!sidebar || !top || !sideText || !sideDetail || !topText) return;
+
+  function setStatus(online){
+    sidebar.classList.toggle("is-online", online);
+    sidebar.classList.toggle("is-offline", !online);
+    top.classList.toggle("is-online", online);
+    top.classList.toggle("is-offline", !online);
+    top.classList.remove("is-checking");
+    sideText.textContent = online ? "Online" : "Offline";
+    topText.textContent = online ? "Online" : "Offline";
+    sideDetail.textContent = online ? "API + Database" : "Server unavailable";
+  }
+
+  async function checkServer(){
+    try{
+      const response = await fetch("/api/health.php", {
+        method:"GET",
+        cache:"no-store",
+        headers:{"Accept":"application/json"}
+      });
+      if(!response.ok) throw new Error("Health check failed");
+      const data = await response.json();
+      setStatus(data && data.ok === true && data.database === "connected");
+    }catch(error){
+      setStatus(false);
+    }
+  }
+
+  checkServer();
+  window.setInterval(checkServer, 30000);
+})();

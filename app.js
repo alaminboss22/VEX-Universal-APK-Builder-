@@ -43,6 +43,6 @@ $("#removeFile").addEventListener("click",()=>{selectedFile=null;input.value="";
 ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("dragging");}));
 ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("dragging");}));
 drop.addEventListener("drop",e=>acceptFile(e.dataTransfer.files[0]));
-analyze.addEventListener("click",()=>{if(!selectedFile)return;toast("Backend not connected — file was not uploaded or analyzed.");});
+analyze.addEventListener("click",()=>{if(!selectedFile)return;if(document.body.dataset.authenticated!=="true"){if(window.VEX_REQUIRE_AUTH)window.VEX_REQUIRE_AUTH("upload");return;}toast("Account ready. Secure project upload API is the next step; file has not been uploaded yet.");});
 $("#saveApi").addEventListener("click",()=>{const v=$("#apiUrl").value.trim();if(v&&!/^https?:\/\/.+/i.test(v)){toast("Enter a valid http:// or https:// URL.");return;}$("#apiSaved").textContent="Preview setting noted. No connection test was made.";toast("Setting saved for this page session.");});
 icons();

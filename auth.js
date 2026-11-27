@@ -66,7 +66,7 @@
   }
   function enter(user) {
     gate.classList.add('auth-hidden');
-    document.body.dataset.authenticated='true';\n    window.dispatchEvent(new CustomEvent('vex:authenticated'));
+    document.body.dataset.authenticated='true';\n    window.dispatchEvent(new CustomEvent('vex:authenticated'));\n    if(authRequested){authRequested=false;window.goAfterAuth?.(pendingPage);}
     const top=document.querySelector('.top-actions');
     if(top && !$('authLogout')) {
       const who=document.createElement('span');who.id='authUserEmail';who.className='muted';who.style.cssText='font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis';who.textContent=user.email;top.insertBefore(who,top.firstChild);

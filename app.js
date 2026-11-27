@@ -25,7 +25,26 @@ $$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
 $("#menuBtn").addEventListener("click",()=>{const opened=$("#sidebar").classList.toggle("open");navBackdrop.classList.toggle("show",opened);});
 let toastTimer;
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600);}
-function setTheme(){const light=!document.body.classList.contains("light");document.body.classList.toggle("light",light);document.body.dataset.themeManual=light?"light":"dark";}
+function setTheme(){
+  const next=document.body.classList.contains("light")?"dark":"light";
+  document.body.classList.toggle("light",next==="light");
+  document.body.dataset.themeManual=next;
+  document.documentElement.style.colorScheme=next;
+  try{localStorage.setItem("vex-theme",next);}catch(e){}
+}
+(function initTheme(){
+  let saved=null;try{saved=localStorage.getItem("vex-theme");}catch(e){}
+  if(saved==="light"||saved==="dark"){
+    document.body.dataset.themeManual=saved;
+    document.body.classList.toggle("light",saved==="light");
+    document.documentElement.style.colorScheme=saved;
+  }else{
+    delete document.body.dataset.themeManual;
+    const light=window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.body.classList.toggle("light",light);
+    document.documentElement.style.colorScheme=light?"light":"dark";
+  }
+})();
 $("#themeBtn").addEventListener("click",setTheme);
 $("#themeSetting").addEventListener("click",setTheme);
 $$("[data-variant]").forEach(b=>b.addEventListener("click",()=>{$$("[data-variant]").forEach(x=>x.classList.toggle("selected",x===b));}));

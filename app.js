@@ -110,10 +110,62 @@ function uploadProject(){
 analyze.addEventListener("click",uploadProject);
 $("#refreshProjects")?.addEventListener("click",loadProjects);
 window.addEventListener("vex:authenticated",loadProjects);
-if(document.body.dataset.authenticated==="true") loadProjects();
+if(document.body.dataset.authenticated==="true"){loadProjects();loadBuildData();}
 $("#saveApi").addEventListener("click",()=>{const v=$("#apiUrl").value.trim();if(v&&!/^https?:\/\/.+/i.test(v)){toast("Enter a valid http:// or https:// URL.");return;}$("#apiSaved").textContent="Preview setting noted. No connection test was made.";toast("Setting saved for this page session.");});
 icons();
 
+async function loadBuildData(){
+  if(document.body.dataset.authenticated!=="true") return;
+  const targets=["#buildProject","#buildProgressList","#buildHistoryList","#buildLogOutput"];
+  try{
+    const response=await fetch("/api/builds.php",{credentials:"same-origin",cache:"no-store"});
+    const data=await response.json();
+    if(!response.ok||!data.ok) throw new Error(data.error||"Could not load build data.");
+    const projectSelect=$(targets[0]);
+    if(projectSelect){
+      const selected=projectSelect.value;
+      projectSelect.replaceChildren(new Option("Select an uploaded project",""));
+      data.projects.forEach(p=>projectSelect.add(new Option(p.project_name+" (#"+p.id+")",String(p.id))));
+      if(selected) projectSelect.value=selected;
+      if(!data.projects.length) projectSelect.replaceChildren(new Option("Upload a project first",""));
+    }
+    const renderList=(selector,items,empty)=>{
+      const el=$(selector);if(!el)return;el.replaceChildren();
+      if(!items.length){const p=document.createElement("p");p.className="muted";p.textContent=empty;el.appendChild(p);return;}
+      items.forEach(b=>{
+        const card=document.createElement("article");card.className="build-data-row";
+        const title=document.createElement("strong");title.textContent="#"+b.id+" · "+b.project_name;
+        const meta=document.createElement("small");meta.textContent=(b.build_format||"APK").toUpperCase()+" · "+(b.build_type||"debug")+" · "+b.created_at;
+        const status=document.createElement("span");status.className="project-status";status.textContent=b.status;
+        card.append(title,meta,status);el.appendChild(card);
+      });
+    };
+    renderList("#buildProgressList",data.builds.filter(b=>["queued","building"].includes(b.status)),"No active build requests.");
+    renderList("#buildHistoryList",data.builds,"No build requests yet.");
+    const log=$("#buildLogOutput");
+    if(log){log.textContent=data.builds.length?data.builds.map(b=>"Build #"+b.id+" ["+b.status+"] · "+b.project_name+"\n"+(b.log_text||"No log messages yet.")).join("\n\n------------------------------\n\n"):"No build logs yet.";}
+  }catch(err){
+    targets.forEach(sel=>{const el=$(sel);if(el)el.textContent=err.message;});
+  }
+}
+$("#startBuildBtn")?.addEventListener("click",async()=>{
+  const error=$("#buildError");error.classList.add("hidden");
+  const payload={action:"create",project_id:Number($("#buildProject").value),config:{
+    app_name:$("#buildAppName").value.trim(),package_id:$("#buildPackage").value.trim(),
+    version_name:$("#buildVersion").value.trim(),version_code:Number($("#buildVersionCode").value),
+    build_format:$("#buildFormat").value,build_type:$("#buildType").value
+  },csrf_token:window.VEX_AUTH?.csrfToken||""};
+  const btn=$("#startBuildBtn");btn.disabled=true;btn.textContent="Saving request…";
+  try{
+    const response=await fetch("/api/builds.php",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"Could not create build request.");
+    toast("Build request saved. Waiting for build worker.");
+    await loadBuildData();go("progress");
+  }catch(err){error.textContent=err.message;error.classList.remove("hidden");}
+  finally{btn.disabled=false;btn.textContent="Create build request →";}
+});
+$("#refreshBuildLogs")?.addEventListener("click",loadBuildData);
+window.addEventListener("vex:authenticated",loadBuildData);
 
 // Live API + database connection indicator. This does not represent build-worker status.
 (function initServerStatus(){

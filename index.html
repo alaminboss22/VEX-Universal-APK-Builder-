@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261127j">
-  <link rel="stylesheet" href="auth.css?v=20261127j">
+  <link rel="stylesheet" href="styles.css?v=20261127k">
+  <link rel="stylesheet" href="auth.css?v=20261127k">
 </head>
 <body>
   <div class="app-shell">
@@ -65,7 +65,9 @@
         <div class="content-card"><div class="card-title"><div><h2>Project archive</h2><p class="muted">ZIP format · Maximum file size depends on server limits</p></div><span class="step-number">01 / 03</span></div>
           <label class="dropzone" id="dropzone" for="zipInput"><span class="upload-symbol"><i data-lucide="cloud-upload"></i></span><strong>Drop your ZIP file here</strong><span>or <u>browse files</u> on your device</span><small>ZIP files are checked on the server before saving.</small><input id="zipInput" type="file" accept=".zip,application/zip"></label>
           <div class="file-result hidden" id="fileResult"><span class="file-badge">ZIP</span><div class="file-meta"><strong id="fileName">project.zip</strong><small id="fileSize">0 KB</small><small id="fileValidation"></small></div><button class="icon-button remove-button" id="removeFile" aria-label="Remove file">×</button></div>
-          <p class="error-text hidden" id="uploadError"></p>\n          <div class="upload-progress hidden" id="uploadProgress" aria-live="polite"><div class="upload-progress-track"><span id="uploadProgressBar"></span></div><small id="uploadProgressText">Uploading…</small></div>\n          <div class="projects-panel"><div class="projects-heading"><strong>Your uploaded projects</strong><button type="button" class="text-button" id="refreshProjects">Refresh</button></div><div id="projectList" class="project-list"><p class="muted small">Sign in to see your saved projects.</p></div></div>
+          <p class="error-text hidden" id="uploadError"></p>
+          <div class="upload-progress hidden" id="uploadProgress" aria-live="polite"><div class="upload-progress-track"><span id="uploadProgressBar"></span></div><small id="uploadProgressText">Uploading…</small></div>
+          <div class="projects-panel"><div class="projects-heading"><strong>Your uploaded projects</strong><button type="button" class="text-button" id="refreshProjects">Refresh</button></div><div id="projectList" class="project-list"><p class="muted small">Sign in to see your saved projects.</p></div></div>
           <div class="card-footer"><span class="muted small">Upload requires your account.</span><button class="primary-button" id="analyzeBtn" disabled>Upload ZIP <span>→</span></button></div>
         </div>
         <div class="notice subtle-notice"><span class="notice-icon">i</span><div><strong>What should the ZIP contain?</strong><p>Include your Android project files, such as Gradle build files and the app source folder. Do not upload passwords, signing keys, or private credentials.</p></div></div>
@@ -109,7 +111,7 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="app.js?v=20261127j"></script>
-  <script src="auth.js?v=20261127j"></script>
+  <script src="app.js?v=20261127k"></script>
+  <script src="auth.js?v=20261127k"></script>
 </body>
 </html>

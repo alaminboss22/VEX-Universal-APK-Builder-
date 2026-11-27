@@ -4,7 +4,31 @@ const pages = ["dashboard","upload","configure","progress","logs","history","set
 const labels = {dashboard:"Dashboard",upload:"Upload project",configure:"Build configuration",progress:"Build progress",logs:"Build logs",history:"Build history",settings:"Settings",help:"Help & documentation"};
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-function icons(){ if(window.lucide) lucide.createIcons(); }
+function icons(){
+  const paths={
+    "layout-dashboard":'<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/>',
+    "cloud-upload":'<path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 8a5 5 0 0 1 0 10h-1"/><path d="M12 22V12m-4 4 4-4 4 4"/>',
+    "sliders-horizontal":'<path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4"/>',
+    "activity":'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+    "terminal":'<path d="m4 17 6-6-6-6m8 14h8"/>',
+    "history":'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5m4-1v5l4 2"/>',
+    "settings-2":'<path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4"/>',
+    "circle-help":'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3m.1 4h.01"/>',
+    "menu":'<path d="M4 6h16M4 12h16M4 18h16"/>',
+    "sun-moon":'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>',
+    "upload":'<path d="M12 16V4m-4 4 4-4 4 4"/><path d="M4 16v4h16v-4"/>',
+    "package-check":'<path d="m12 3 9 5v8l-9 5-9-5V8l9-5Z"/><path d="m3.5 8.5 8.5 5 8.5-5M12 13.5V21m-3-9 2 2 4-4"/>',
+    "clock-3":'<circle cx="12" cy="12" r="9"/><path d="M12 7v5h5"/>'
+  };
+  document.querySelectorAll("[data-lucide]").forEach(el=>{
+    const name=el.getAttribute("data-lucide"), body=paths[name]||'<circle cx="12" cy="12" r="9"/>';
+    const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+    svg.setAttribute("viewBox","0 0 24 24");svg.setAttribute("width","20");svg.setAttribute("height","20");
+    svg.setAttribute("fill","none");svg.setAttribute("stroke","currentColor");svg.setAttribute("stroke-width","1.8");
+    svg.setAttribute("stroke-linecap","round");svg.setAttribute("stroke-linejoin","round");svg.setAttribute("aria-hidden","true");
+    svg.innerHTML=body;el.replaceWith(svg);
+  });
+}
 const navBackdrop=document.createElement("div");
 navBackdrop.className="mobile-nav-backdrop";
 navBackdrop.setAttribute("aria-hidden","true");

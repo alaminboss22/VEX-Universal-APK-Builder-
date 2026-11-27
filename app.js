@@ -3,6 +3,12 @@ const labels = {dashboard:"Dashboard",upload:"Upload project",configure:"Build c
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 function icons(){ if(window.lucide) lucide.createIcons(); }
+const navBackdrop=document.createElement("div");
+navBackdrop.className="mobile-nav-backdrop";
+navBackdrop.setAttribute("aria-hidden","true");
+document.body.appendChild(navBackdrop);
+function closeMobileNav(){ closeMobileNav(); navBackdrop.classList.remove("show"); }
+navBackdrop.addEventListener("click",closeMobileNav);
 function go(page){
   if(!pages.includes(page)) return;
   $$(".page").forEach(p=>p.classList.toggle("active",p.id===`page-${page}`));
@@ -14,7 +20,7 @@ function go(page){
 }
 $$(".nav-link").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
 $$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
-$("#menuBtn").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+$("#menuBtn").addEventListener("click",()=>{const opened=$("#sidebar").classList.toggle("open");navBackdrop.classList.toggle("show",opened);});
 let toastTimer;
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600);}
 function setTheme(){document.body.classList.toggle("light");}

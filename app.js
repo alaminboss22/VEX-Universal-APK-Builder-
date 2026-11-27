@@ -7,14 +7,14 @@ const navBackdrop=document.createElement("div");
 navBackdrop.className="mobile-nav-backdrop";
 navBackdrop.setAttribute("aria-hidden","true");
 document.body.appendChild(navBackdrop);
-function closeMobileNav(){ closeMobileNav(); navBackdrop.classList.remove("show"); }
+function closeMobileNav(){ $("#sidebar").classList.remove("open"); navBackdrop.classList.remove("show"); }
 navBackdrop.addEventListener("click",closeMobileNav);
 function go(page){
   if(!pages.includes(page)) return;
   $$(".page").forEach(p=>p.classList.toggle("active",p.id===`page-${page}`));
   $$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
   $("#pageCrumb").textContent=labels[page];
-  $("#sidebar").classList.remove("open");
+  closeMobileNav();
   window.scrollTo({top:0,behavior:"smooth"});
   icons();
 }

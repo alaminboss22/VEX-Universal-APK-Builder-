@@ -19,7 +19,7 @@ jobs:
           VEX_WORKER_TOKEN: ${{ secrets.VEX_WORKER_TOKEN }}
           VEX_API: https://videocut.site.je/api/worker.php
         run: |
-          test -n "$VEX_WORKER_TOKEN" || { echo "Missing VEX_WORKER_TOKEN repository secret"; exit 1; }
+          if [ -z "$VEX_WORKER_TOKEN" ]; then echo "VEX_WORKER_TOKEN secret is not configured yet; skipping worker run."; echo "has_job=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           curl --fail-with-body --silent --show-error -X POST "$VEX_API" -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" -F action=claim -o claim.json
           jq -e '.ok == true' claim.json >/dev/null
           if [ "$(jq -r '.job // empty' claim.json)" = "" ]; then echo "has_job=false" >> "$GITHUB_OUTPUT"; exit 0; fi

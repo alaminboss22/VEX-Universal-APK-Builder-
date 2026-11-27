@@ -43,3 +43,65 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
  .footer{padding-bottom:20px}
 }
 @media(max-width:380px){.stats-grid{grid-template-columns:1fr}.stat-card{display:flex;align-items:center;justify-content:space-between;gap:8px}.stat-label{margin:0}.stat-card strong{font-size:18px}.stat-card small{max-width:110px;text-align:right}}
+
+/* VEX clean, touch-first adaptive theme */
+:root{color-scheme:dark;--radius:16px}
+html,body{min-height:100%;-webkit-tap-highlight-color:transparent}
+body{letter-spacing:0;line-height:1.6}
+button{touch-action:manipulation}
+.nav-icon svg,.step-symbol svg,.upload-symbol svg,.empty-icon svg{width:20px;height:20px;stroke-width:1.8}
+.nav-icon{flex:0 0 22px}
+.icon-button{min-width:42px;min-height:42px}
+.primary-button,.secondary-button,.nav-link,.step-card,.variant{min-height:44px}
+.content-card,.stat-card,.step-card,.empty-panel,.log-panel{box-shadow:0 8px 28px #00000012}
+.dropzone{gap:10px}
+@media(max-width:760px){
+ .main-area{padding-left:14px;padding-right:14px}
+ .topbar{padding:0 2px}
+ .welcome-row .primary-button,.card-footer .primary-button{min-height:52px}
+ .nav-link{min-height:48px;font-size:14px}
+ .step-card{min-height:unset}
+ .stats-grid{gap:7px}
+ .stat-card{border-radius:12px}
+ .dropzone{min-height:190px}
+ .auth-card{width:min(100%,430px);max-height:calc(100dvh - 28px);overflow:auto}
+}
+@media(prefers-color-scheme:light){
+ body:not(.dark-choice){--bg:#f5f6fa;--panel:#fff;--panel2:#f0f2f7;--line:#e2e5ed;--text:#1d2433;--muted:#687386;background:#f5f6fa;color:#1d2433}
+ body:not(.dark-choice) .sidebar{background:#fff;border-color:#e2e5ed}
+ body:not(.dark-choice) .nav-link{color:#596579}
+ body:not(.dark-choice) .nav-link:hover{background:#f1f2f8;color:#20283a}
+ body:not(.dark-choice) .nav-link.active{background:#eeecff;color:#5e50c7;box-shadow:inset 3px 0 #7968ee}
+ body:not(.dark-choice) .topbar{border-color:#e2e5ed;background:#f5f6faee}
+ body:not(.dark-choice) .breadcrumbs strong{color:#202538}
+ body:not(.dark-choice) .icon-button{background:#fff;color:#273044;border-color:#e2e5ed}
+ body:not(.dark-choice) .stat-card,body:not(.dark-choice) .content-card,body:not(.dark-choice) .empty-panel,body:not(.dark-choice) .log-panel,body:not(.dark-choice) .step-card{background:#fff;border-color:#e2e5ed}
+ body:not(.dark-choice) .notice{background:#f0edff;color:#373052;border-color:#e0dcfa}
+ body:not(.dark-choice) .notice p{color:#696181}
+ body:not(.dark-choice) .dropzone{background:#fafaff;color:#30334a;border-color:#c9c5e8}
+ body:not(.dark-choice) .dropzone span{color:#66627c}
+ body:not(.dark-choice) .dropzone small{color:#747b8b}
+ body:not(.dark-choice) .file-result{background:#f4f5fa;border-color:#e2e5ed}
+ body:not(.dark-choice) .form-grid label,body:not(.dark-choice) .full-label{color:#465166}
+ body:not(.dark-choice) .form-grid input,body:not(.dark-choice) .form-grid select,body:not(.dark-choice) .full-label input{background:#fff;color:#202538;border-color:#dce1ea}
+ body:not(.dark-choice) .variant-options{background:#f0f1f6}
+ body:not(.dark-choice) .variant.selected{background:#e4dfff;color:#5142a4}
+ body:not(.dark-choice) .subtle-notice{background:#f5f7fb;color:#30384a}
+ body:not(.dark-choice) .subtle-notice p{color:#69748a}
+ body:not(.dark-choice) .sidebar-bottom{background:#fff;color:#465166;border-color:#e2e5ed}
+ body:not(.dark-choice) .auth-gate{background:#f2f4f9eF}
+ body:not(.dark-choice) .auth-card{background:#fff;border-color:#e2e5ed;color:#202538}
+ body:not(.dark-choice) .auth-form label{color:#30384a}
+ body:not(.dark-choice) .auth-form input{background:#fff;color:#202538;border-color:#dce1ea}
+}
+body.light{--bg:#f5f6fa;--panel:#fff;--panel2:#f0f2f7;--line:#e2e5ed;--text:#1d2433;--muted:#687386;background:#f5f6fa;color:#1d2433}
+body.light .sidebar{background:#fff;border-color:#e2e5ed}
+body.light .nav-link{color:#596579}
+body.light .nav-link:hover{background:#f1f2f8;color:#20283a}
+body.light .nav-link.active{background:#eeecff;color:#5e50c7}
+body.light .topbar{background:#f5f6faee;border-color:#e2e5ed}
+body.light .breadcrumbs strong{color:#202538}
+body.light .icon-button{background:#fff;color:#273044;border-color:#e2e5ed}
+body.light .stat-card,body.light .content-card,body.light .empty-panel,body.light .log-panel,body.light .step-card{background:#fff;border-color:#e2e5ed}
+body.light .form-grid label,body.light .full-label{color:#465166}
+body.light .sidebar-bottom{background:#fff;color:#465166}

@@ -244,3 +244,20 @@ body[data-theme-manual="dark"] .form-grid input,body[data-theme-manual="dark"] .
 .server-status-pill.is-online i,.sidebar-bottom.server-status.is-online .status-dot{background:#16a36a;box-shadow:0 0 0 4px #16a36a22}
 .server-status-pill.is-offline i,.sidebar-bottom.server-status.is-offline .status-dot{background:#dc4545;box-shadow:0 0 0 4px #dc454522}
 @media(max-width:480px){.server-status-pill{font-size:11px;padding:6px 8px}.top-actions{gap:6px}}
+
+/* Real project upload and account-owned project list */
+.upload-progress{margin-top:15px;padding:13px;border:1px solid var(--line);border-radius:11px;background:var(--panel2)}
+.upload-progress-track{height:8px;background:#293246;border-radius:20px;overflow:hidden}
+.upload-progress-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,#8b7cff,#52d6a0);border-radius:20px;transition:width .15s}
+.upload-progress small{display:block;color:var(--muted);margin-top:7px;font-size:11px}
+.projects-panel{margin-top:20px;padding-top:17px;border-top:1px solid var(--line)}
+.projects-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.projects-heading strong{font:600 14px "Space Grotesk"}
+.project-list{display:grid;gap:8px}
+.project-row{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}
+.project-file-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:9px;background:#302b50;color:#c7baff;font-size:10px;font-weight:800;flex:0 0 auto}
+.project-info{display:grid;min-width:0;flex:1}
+.project-info strong{font-size:12px;overflow-wrap:anywhere}
+.project-info small{font-size:10px;color:var(--muted)}
+.project-status{font-size:10px;color:var(--green);background:#12332d;padding:4px 8px;border-radius:20px}
+body.light .project-row{background:#f6f7fb}

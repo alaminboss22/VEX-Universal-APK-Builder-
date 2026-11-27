@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261127h">
-  <link rel="stylesheet" href="auth.css?v=20261127h">
+  <link rel="stylesheet" href="styles.css?v=20261127i">
+  <link rel="stylesheet" href="auth.css?v=20261127i">
 </head>
 <body>
   <div class="app-shell">
@@ -32,19 +32,19 @@
         <button class="nav-link" data-page="settings"><span class="nav-icon"><i data-lucide="settings-2"></i></span>Settings</button>
         <button class="nav-link" data-page="help"><span class="nav-icon"><i data-lucide="circle-help"></i></span>Help & documentation</button>
       </nav>
-      <div class="sidebar-bottom"><span class="status-dot"></span><span>Frontend preview</span><small>Backend not connected</small></div>
+      <div class="sidebar-bottom server-status" id="sidebarServerStatus" role="status" aria-live="polite"><span class="status-dot" id="sidebarStatusDot"></span><span id="sidebarStatusText">Checking server…</span><small id="sidebarStatusDetail">API status</small></div>
     </aside>
 
     <main class="main-area">
       <header class="topbar">
         <button class="icon-button menu-button" id="menuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
         <div class="breadcrumbs">Workspace <span>/</span> <strong id="pageCrumb">Dashboard</strong></div>
-        <div class="top-actions"><span class="preview-pill"><i></i> Preview mode</span><button class="icon-button" id="themeBtn" aria-label="Toggle theme"><i data-lucide="sun-moon"></i></button><div class="avatar">VX</div></div>
+        <div class="top-actions"><span class="preview-pill server-status-pill is-checking" id="topServerStatus" role="status" aria-live="polite"><i></i><span id="topServerStatusText">Checking…</span></span><button class="icon-button" id="themeBtn" aria-label="Toggle theme"><i data-lucide="sun-moon"></i></button><div class="avatar">VX</div></div>
       </header>
 
       <section class="page active" id="page-dashboard">
         <div class="welcome-row"><div><div class="eyebrow">YOUR ANDROID BUILD WORKSPACE</div><h1>Build something <span>great.</span></h1><p class="muted">Prepare your Android project and get it ready for a cloud build.</p></div><button class="primary-button" data-go="upload">＋ New project</button></div>
-        <div class="notice"><span class="notice-icon">i</span><div><strong>Preview version</strong><p>This interface is a frontend starter. Upload, build execution, account login and APK downloads need a connected backend and build workers.</p></div></div>
+        
         <div class="stats-grid">
           <article class="stat-card"><span class="stat-label">Total builds</span><strong>—</strong><small>Available after backend setup</small></article>
           <article class="stat-card"><span class="stat-label">Successful builds</span><strong>—</strong><small>Build service not connected</small></article>
@@ -104,12 +104,12 @@
         <div class="page-heading"><div class="eyebrow">SUPPORT</div><h1>Help & documentation</h1><p class="muted">Learn what is available in this starter version.</p></div>
         <div class="content-card help-content"><h2>What works right now?</h2><p>Navigation, theme switching, basic ZIP file selection checks and interface previews.</p><h2>What still needs to be built?</h2><p>Secure user authentication, PHP API endpoints, database tables, server-side ZIP validation, isolated Android build workers, build queue, real-time logs and APK download storage.</p><h2>Important security note</h2><p>Never put database passwords, FTP credentials, signing keys or API secrets in frontend JavaScript. Keep secrets on the server and in GitHub Actions Secrets.</p></div>
       </section>
-      <footer class="footer"><span>© 2026 VEX Universal APK Builder</span><span>Frontend starter · Backend pending</span></footer>
+      <footer class="footer"><span>© 2026 VEX Universal APK Builder</span><span>Server status shown above</span></footer>
     </main>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="app.js?v=20261127h"></script>
-  <script src="auth.js?v=20261127h"></script>
+  <script src="app.js?v=20261127i"></script>
+  <script src="auth.js?v=20261127i"></script>
 </body>
 </html>

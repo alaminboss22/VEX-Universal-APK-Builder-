@@ -40,7 +40,7 @@
   function enter(user) {
     gate.classList.add('auth-hidden');
     document.body.dataset.authenticated='true';
-    const top=$('.top-actions');
+    const top=document.querySelector('.top-actions');
     if(top && !$('authLogout')) {
       const who=document.createElement('span');who.id='authUserEmail';who.className='muted';who.style.cssText='font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis';who.textContent=user.email;top.insertBefore(who,top.firstChild);
       const btn=document.createElement('button');btn.id='authLogout';btn.className='auth-logout';btn.type='button';btn.textContent='Logout';top.appendChild(btn);

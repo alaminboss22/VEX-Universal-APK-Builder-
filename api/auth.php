@@ -101,6 +101,70 @@ if ($action === 'login') {
     respond(200, ['ok' => true, 'message' => 'Logged in.', 'user' => ['id' => $_SESSION['user_id'], 'email' => $_SESSION['user_email']], 'csrf_token' => $_SESSION['csrf']]);
 }
 
+
+if ($action === 'forgot_password') {
+    $email = strtolower(trim((string)($input['email'] ?? '')));
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) {
+        respond(422, ['ok' => false, 'error' => 'Enter a valid email address.']);
+    }
+
+    // Keep the response identical whether the account exists or not.
+    $generic = 'If an account exists for that email, a password reset link will be sent.';
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = :email LIMIT 1');
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch();
+    if ($user) {
+        $rate = $pdo->prepare('SELECT created_at FROM password_resets WHERE user_id = :uid AND created_at > (NOW() - INTERVAL 60 SECOND) LIMIT 1');
+        $rate->execute(['uid' => $user['id']]);
+        if ($rate->fetch()) {
+            respond(200, ['ok' => true, 'message' => $generic]);
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $tokenHash = hash('sha256', $token);
+        $expires = date('Y-m-d H:i:s', time() + 900);
+        $pdo->prepare('DELETE FROM password_resets WHERE user_id = :uid')->execute(['uid' => $user['id']]);
+        $save = $pdo->prepare('INSERT INTO password_resets (user_id, token_hash, expires_at) VALUES (:uid, :hash, :expires)');
+        $save->execute(['uid' => $user['id'], 'hash' => $tokenHash, 'expires' => $expires]);
+
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = preg_replace('/[^a-z0-9.:-]/i', '', (string)($_SERVER['HTTP_HOST'] ?? 'videocut.site.je'));
+        $resetUrl = $scheme . '://' . $host . '/?reset=' . rawurlencode($token);
+        $subject = 'VEX Universal APK Builder password reset';
+        $body = "A password reset was requested for your VEX account.\\n\\nOpen this link within 15 minutes to choose a new password:\\n" . $resetUrl . "\\n\\nIf you did not request this, ignore this email.";
+        $headers = "From: VEX APK Builder <no-reply@" . $host . ">\\r\\n";
+        $headers .= "Content-Type: text/plain; charset=UTF-8\\r\\n";
+        if (!function_exists('mail') || !@mail($email, $subject, $body, $headers)) {
+            error_log('VEX password reset email could not be sent for user id ' . (int)$user['id']);
+            // Remove the unusable token so it cannot be used if delivery failed.
+            $pdo->prepare('DELETE FROM password_resets WHERE user_id = :uid')->execute(['uid' => $user['id']]);
+        }
+    }
+    respond(200, ['ok' => true, 'message' => $generic]);
+}
+
+if ($action === 'reset_password') {
+    $token = (string)($input['token'] ?? '');
+    $password = (string)($input['password'] ?? '');
+    if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
+        respond(422, ['ok' => false, 'error' => 'This reset link is invalid or expired.']);
+    }
+    if (strlen($password) < 10 || strlen($password) > 200) {
+        respond(422, ['ok' => false, 'error' => 'Password must be 10 to 200 characters.']);
+    }
+    $tokenHash = hash('sha256', $token);
+    $stmt = $pdo->prepare('SELECT id, user_id FROM password_resets WHERE token_hash = :hash AND expires_at > NOW() LIMIT 1');
+    $stmt->execute(['hash' => $tokenHash]);
+    $reset = $stmt->fetch();
+    if (!$reset) {
+        respond(400, ['ok' => false, 'error' => 'This reset link is invalid or expired.']);
+    }
+    $newHash = password_hash($password, PASSWORD_DEFAULT);
+    $pdo->prepare('UPDATE users SET password_hash = :hash WHERE id = :uid')->execute(['hash' => $newHash, 'uid' => $reset['user_id']]);
+    $pdo->prepare('DELETE FROM password_resets WHERE user_id = :uid')->execute(['uid' => $reset['user_id']]);
+    respond(200, ['ok' => true, 'message' => 'Password updated. Please sign in with your new password.']);
+}
+
 if ($action === 'logout') {
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {

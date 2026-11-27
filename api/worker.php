@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 header('Cache-Control: no-store');
-function respond(int $status,array $data): never { http_response_code($status); header('Content-Type: application/json; charset=utf-8'); echo json_encode($data,JSON_UNESCAPED_SLASHES); exit; }
+function respond(int $status,array $data) { http_response_code($status); header('Content-Type: application/json; charset=utf-8'); echo json_encode($data,JSON_UNESCAPED_SLASHES); exit; }
 $configFile=dirname(__DIR__).'/config.php';
 $config=is_file($configFile)?require $configFile:[];
 $expected=(string)($config['worker_token']??'');
@@ -20,8 +20,9 @@ if($downloadId){
   header('Content-Type: application/vnd.android.package-archive');header('Content-Length: '.filesize($file));header('Content-Disposition: attachment; filename="VEX-build-'.$downloadId.'.apk"');readfile($file);exit;
 }
 if(!$isWorker) respond(403,['ok'=>false,'error'=>'Worker authentication failed.']);
-require __DIR__.'/db.php';
 $action=(string)($_POST['action']??$_GET['action']??'');
+if($_SERVER['REQUEST_METHOD']==='POST' && $action==='ping') respond(200,['ok'=>true,'message'=>'Worker POST authentication passed.']);
+require __DIR__.'/db.php';
 if($_SERVER['REQUEST_METHOD']==='POST' && $action==='claim'){
   $pdo->beginTransaction();
   try{

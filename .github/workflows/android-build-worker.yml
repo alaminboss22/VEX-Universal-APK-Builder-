@@ -20,6 +20,11 @@ jobs:
           VEX_API: https://videocut.site.je/api/worker.php
         run: |
           if [ -z "$VEX_WORKER_TOKEN" ]; then echo "VEX_WORKER_TOKEN secret is not configured yet; skipping worker run."; echo "has_job=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "Testing authenticated POST connection..."
+          curl --http1.1 --retry 2 --retry-all-errors --retry-delay 2 --connect-timeout 20 --max-time 60 --fail-with-body --silent --show-error -X POST "$VEX_API" -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" -H "Content-Type: application/x-www-form-urlencoded" --data "action=ping" -o ping.json
+          cat ping.json
+          jq -e '.ok == true' ping.json >/dev/null
+          echo "POST connection passed; claiming build..."
           curl --http1.1 --retry 3 --retry-all-errors --retry-delay 2 --connect-timeout 20 --max-time 60 --fail-with-body --silent --show-error -X POST "$VEX_API" -H "X-VEX-Worker-Token: $VEX_WORKER_TOKEN" -H "Content-Type: application/x-www-form-urlencoded" --data "action=claim" -o claim.json
           jq -e '.ok == true' claim.json >/dev/null
           if [ "$(jq -r '.job // empty' claim.json)" = "" ]; then echo "has_job=false" >> "$GITHUB_OUTPUT"; exit 0; fi

@@ -12,7 +12,7 @@ $uid=(int)$_SESSION['user_id'];
 if($_SERVER['REQUEST_METHOD']==='GET'){
   $p=$pdo->prepare('SELECT id,project_name,status,created_at FROM projects WHERE user_id=:uid ORDER BY id DESC LIMIT 100');
   $p->execute(['uid'=>$uid]);
-  $b=$pdo->prepare('SELECT b.id,b.status,b.log_text,b.build_format,b.build_type,b.created_at,p.project_name FROM builds b INNER JOIN projects p ON p.id=b.project_id WHERE p.user_id=:uid ORDER BY b.id DESC LIMIT 100');
+  $b=$pdo->prepare('SELECT b.id,b.status,b.log_text,b.build_format,b.build_type,b.apk_path,b.created_at,p.project_name FROM builds b INNER JOIN projects p ON p.id=b.project_id WHERE p.user_id=:uid ORDER BY b.id DESC LIMIT 100');
   $b->execute(['uid'=>$uid]);
   out(200,['ok'=>true,'projects'=>$p->fetchAll(PDO::FETCH_ASSOC),'builds'=>$b->fetchAll(PDO::FETCH_ASSOC)]);
 }

@@ -1,6 +1,6 @@
 (() => {
   const gate = document.createElement('section');
-  gate.className = 'auth-gate';
+  gate.className = 'auth-gate auth-hidden';
   gate.id = 'authGate';
   gate.innerHTML = `
     <div class="auth-card">
@@ -17,7 +17,8 @@
       <p class="auth-privacy">Your password is securely hashed on the server. Never share it with anyone.</p>
     </div>`;
   document.body.appendChild(gate);
-  let mode = 'login', csrf = '', resetToken = new URLSearchParams(location.search).get('reset') || '';
+  let mode = 'login', csrf = '', pendingPage = 'upload', resetToken = new URLSearchParams(location.search).get('reset') || '';
+  window.VEX_REQUIRE_AUTH = page => { pendingPage = page || 'upload'; gate.classList.remove('auth-hidden'); $('authEmail').focus(); };
   const $ = id => document.getElementById(id);
   const message = (text, success=false) => { $('authMessage').textContent=text; $('authMessage').classList.toggle('success',success); };
   function setMode(next) {
@@ -94,7 +95,7 @@
       const data=await response.json();
       if(!response.ok||!data.ok) throw new Error('Could not connect to the account service.');
       csrf=data.csrf_token||'';
-      if(data.authenticated&&data.user) enter(data.user);
+      if(data.authenticated&&data.user) enter(data.user); else if(resetToken) gate.classList.remove('auth-hidden');
     }catch(e){message('Account service unavailable. Please refresh or contact support.');}
   })();
 })();

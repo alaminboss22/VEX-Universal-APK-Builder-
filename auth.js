@@ -10,7 +10,7 @@
       <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth-tab="login">Login</button><button type="button" class="auth-tab" data-auth-tab="register">Create account</button></div>
       <form class="auth-form" id="authForm">
         <label>Email address<input id="authEmail" type="email" autocomplete="email" maxlength="190" required placeholder="you@example.com"></label>
-        <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="10" maxlength="200" required placeholder="At least 10 characters"></label>
+        <label>Password<span class="password-field"><input id="authPassword" type="password" autocomplete="current-password" minlength="10" maxlength="200" required placeholder="At least 10 characters"><button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span></label>
         <button type="button" class="auth-forgot" id="authForgot">Forgot password?</button><button class="primary-button auth-submit" id="authSubmit" type="submit">Sign in</button>
         <div class="auth-message" id="authMessage" role="status"></div>
       </form>
@@ -21,6 +21,14 @@
   window.VEX_REQUIRE_AUTH = page => { pendingPage = page || 'upload'; authRequested = true; gate.classList.remove('auth-hidden'); $('authEmail').focus(); };
   const $ = id => document.getElementById(id);
   const message = (text, success=false) => { $('authMessage').textContent=text; $('authMessage').classList.toggle('success',success); };
+  $('passwordToggle').addEventListener('click', () => {
+    const field = $('authPassword');
+    const reveal = field.type === 'password';
+    field.type = reveal ? 'text' : 'password';
+    $('passwordToggle').classList.toggle('is-visible', reveal);
+    $('passwordToggle').setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    $('passwordToggle').title = reveal ? 'Hide password' : 'Show password';
+  });
   function setMode(next) {
     mode=next;
     document.querySelectorAll('[data-auth-tab]').forEach(b=>b.classList.toggle('active',b.dataset.authTab===mode));

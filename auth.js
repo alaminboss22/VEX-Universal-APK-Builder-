@@ -17,8 +17,8 @@
       <p class="auth-privacy">Your password is securely hashed on the server. Never share it with anyone.</p>
     </div>`;
   document.body.appendChild(gate);
-  let mode = 'login', csrf = '', pendingPage = 'upload', resetToken = new URLSearchParams(location.search).get('reset') || '';
-  window.VEX_REQUIRE_AUTH = page => { pendingPage = page || 'upload'; gate.classList.remove('auth-hidden'); $('authEmail').focus(); };
+  let mode = 'login', csrf = '', pendingPage = 'upload', authRequested = false, resetToken = new URLSearchParams(location.search).get('reset') || '';
+  window.VEX_REQUIRE_AUTH = page => { pendingPage = page || 'upload'; authRequested = true; gate.classList.remove('auth-hidden'); $('authEmail').focus(); };
   const $ = id => document.getElementById(id);
   const message = (text, success=false) => { $('authMessage').textContent=text; $('authMessage').classList.toggle('success',success); };
   function setMode(next) {

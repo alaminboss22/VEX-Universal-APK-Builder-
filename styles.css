@@ -223,3 +223,11 @@ body.light .mobile-nav-backdrop{background:#0007}
  body:not([data-theme-manual="dark"]) .auth-submit{background:#111;color:#fff}body:not([data-theme-manual="dark"]) .auth-forgot{color:#333}
  body:not([data-theme-manual="dark"]) .toast{background:#111;color:#fff}
 }
+
+body[data-theme-manual="dark"]{color-scheme:dark;--bg:#0b1020;--panel:#111a2d;--panel2:#17223a;--line:#263550;--text:#f4f7ff;--muted:#9aa9c2;background:#0b1020;color:#f4f7ff}
+body[data-theme-manual="dark"] .sidebar{background:#0d1526;border-color:#1e2b43}
+body[data-theme-manual="dark"] .stat-card,body[data-theme-manual="dark"] .content-card,body[data-theme-manual="dark"] .empty-panel,body[data-theme-manual="dark"] .log-panel,body[data-theme-manual="dark"] .step-card{background:linear-gradient(145deg,#141f34,#10192b);border-color:#263550}
+body[data-theme-manual="dark"] .topbar{background:#0b1020ee;border-color:#202d45}
+body[data-theme-manual="dark"] .dropzone{background:#121d31;color:#e6e2ff}
+body[data-theme-manual="dark"] .form-grid input,body[data-theme-manual="dark"] .form-grid select,body[data-theme-manual="dark"] .full-label input{background:#101622;color:#f4f7ff}
+.nav-icon svg,.step-symbol svg,.upload-symbol svg,.empty-icon svg{width:20px;height:20px;stroke-width:1.8}

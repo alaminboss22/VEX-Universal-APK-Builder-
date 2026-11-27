@@ -1,0 +1,4 @@
+Options -Indexes
+<FilesMatch "\\.(apk|aab|zip)$">
+  Require all denied
+</FilesMatch>

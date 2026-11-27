@@ -13,6 +13,10 @@ function closeMobileNav(){ $("#sidebar").classList.remove("open"); navBackdrop.c
 navBackdrop.addEventListener("click",closeMobileNav);
 function go(page){
   if(!pages.includes(page)) return;
+  if(["upload","configure","progress","logs","history","settings"].includes(page) && document.body.dataset.authenticated!=="true"){
+    if(window.VEX_REQUIRE_AUTH) window.VEX_REQUIRE_AUTH(page);
+    return;
+  }
   $$(".page").forEach(p=>p.classList.toggle("active",p.id===`page-${page}`));
   $$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
   $("#pageCrumb").textContent=labels[page];
@@ -20,9 +24,10 @@ function go(page){
   window.scrollTo({top:0,behavior:"smooth"});
   icons();
 }
-$$(".nav-link").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+window.goAfterAuth = page => go(page);
+$(".nav-link").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
 $$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
-$("#menuBtn").addEventListener("click",()=>{const opened=$("#sidebar").classList.toggle("open");navBackdrop.classList.toggle("show",opened);});
+$("#menuBtn").addEventListener("click",()=>{const opened=$("#sidebar").classList.toggle("open");navBackdrop.classList.toggle("show",opened);$("#menuBtn").setAttribute("aria-expanded",String(opened));});
 let toastTimer;
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600);}
 function setTheme(){

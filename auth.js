@@ -70,8 +70,21 @@
   $('authForm').addEventListener('submit',async e=>{
     e.preventDefault();$('authSubmit').disabled=true;message(mode==='login'?'Signing in…':'Creating account…');
     try{
-      const data=await request({action:mode,email:$('authEmail').value.trim(),password:$('authPassword').value});
-      message(data.message||'Success.',true);enter(data.user);
+      const data = resetToken
+        ? await request({action:'reset_password', token:resetToken, password:$('authPassword').value})
+        : await request({action:mode, email:$('authEmail').value.trim(), password:$('authPassword').value});
+      message(data.message||'Success.',true);
+      if (resetToken) {
+        history.replaceState({}, '', location.pathname);
+        resetToken='';
+        $('authPassword').value='';
+        $('authEmail').closest('label').classList.remove('auth-hidden');
+        document.querySelector('.auth-tabs').classList.remove('auth-hidden');
+        $('authForgot').classList.remove('auth-hidden');
+        setMode('login');
+      } else {
+        enter(data.user);
+      }
     }catch(err){message(err.message);}
     finally{$('authSubmit').disabled=false;}
   });

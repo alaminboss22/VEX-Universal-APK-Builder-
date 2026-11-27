@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131d">
+  <meta name="description" content="VEX Universal APK Builder — prepare Android projects for cloud builds.">
+  <title>VEX Universal APK Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="VEX home" data-go="dashboard">
+        <span class="brand-mark">V</span><span class="brand-copy"><strong>VEX</strong><small>UNIVERSAL APK BUILDER</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-link active" data-page="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
+        <button class="nav-link" data-page="upload"><span class="nav-icon">⇧</span>Upload project</button>
+        <button class="nav-link" data-page="configure"><span class="nav-icon">⚙</span>Build configuration</button>
+        <button class="nav-link" data-page="progress"><span class="nav-icon">◷</span>Build progress</button>
+        <button class="nav-link" data-page="logs"><span class="nav-icon">≡</span>Build logs</button>
+        <button class="nav-link" data-page="history"><span class="nav-icon">◴</span>Build history</button>
+      </nav>
+      <div class="workspace-label lower-label">PREFERENCES</div>
+      <nav class="nav-list">
+        <button class="nav-link" data-page="settings"><span class="nav-icon">⚑</span>Settings</button>
+        <button class="nav-link" data-page="help"><span class="nav-icon">?</span>Help & documentation</button>
+      </nav>
+      <div class="sidebar-bottom"><span class="status-dot"></span><span>Frontend preview</span><small>Backend not connected</small></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuBtn" aria-label="Open menu">☰</button>
+        <div class="breadcrumbs">Workspace <span>/</span> <strong id="pageCrumb">Dashboard</strong></div>
+        <div class="top-actions"><span class="preview-pill"><i></i> Preview mode</span><button class="icon-button" id="themeBtn" aria-label="Toggle theme">◐</button><div class="avatar">VX</div></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="welcome-row"><div><div class="eyebrow">YOUR ANDROID BUILD WORKSPACE</div><h1>Build something <span>great.</span></h1><p class="muted">Prepare your Android project and get it ready for a cloud build.</p></div><button class="primary-button" data-go="upload">＋ New project</button></div>
+        <div class="notice"><span class="notice-icon">i</span><div><strong>Preview version</strong><p>This interface is a frontend starter. Upload, build execution, account login and APK downloads need a connected backend and build workers.</p></div></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-label">Total builds</span><strong>—</strong><small>Available after backend setup</small></article>
+          <article class="stat-card"><span class="stat-label">Successful builds</span><strong>—</strong><small>Build service not connected</small></article>
+          <article class="stat-card"><span class="stat-label">Projects</span><strong>—</strong><small>No projects loaded</small></article>
+        </div>
+        <div class="section-heading"><div><h2>Get started</h2><p class="muted">Follow these steps to prepare your first build.</p></div></div>
+        <div class="steps-grid">
+          <button class="step-card" data-go="upload"><span class="step-number">01</span><span class="step-symbol">⇧</span><strong>Upload project</strong><p>Choose a ZIP archive containing your Android project.</p><span class="step-link">Choose a file →</span></button>
+          <button class="step-card" data-go="configure"><span class="step-number">02</span><span class="step-symbol">⚙</span><strong>Configure build</strong><p>Set the app details and build options.</p><span class="step-link">Configure →</span></button>
+          <button class="step-card" data-go="progress"><span class="step-number">03</span><span class="step-symbol">▣</span><strong>Build APK</strong><p>Build execution will be enabled after backend setup.</p><span class="step-link">View status →</span></button>
+        </div>
+        <div class="section-heading"><div><h2>Recent activity</h2><p class="muted">Your latest project activity will appear here.</p></div><button class="text-button" data-go="history">View history →</button></div>
+        <div class="empty-panel"><div class="empty-icon">◷</div><strong>No activity yet</strong><p>Your build activity will show here when the backend is connected.</p></div>
+      </section>
+
+      <section class="page" id="page-upload">
+        <div class="page-heading"><div class="eyebrow">PROJECT SETUP</div><h1>Upload your project</h1><p class="muted">Select a ZIP archive of your Android project.</p></div>
+        <div class="content-card"><div class="card-title"><div><h2>Project archive</h2><p class="muted">ZIP format · Maximum preview selection size: 100 MB</p></div><span class="step-number">01 / 03</span></div>
+          <label class="dropzone" id="dropzone" for="zipInput"><span class="upload-symbol">⇧</span><strong>Drop your ZIP file here</strong><span>or <u>browse files</u> on your device</span><small>Only .zip files are accepted in this frontend preview.</small><input id="zipInput" type="file" accept=".zip,application/zip"></label>
+          <div class="file-result hidden" id="fileResult"><span class="file-badge">ZIP</span><div class="file-meta"><strong id="fileName">project.zip</strong><small id="fileSize">0 KB</small><small id="fileValidation"></small></div><button class="icon-button remove-button" id="removeFile" aria-label="Remove file">×</button></div>
+          <p class="error-text hidden" id="uploadError"></p>
+          <div class="card-footer"><span class="muted small">Your file is not uploaded to a server yet.</span><button class="primary-button" id="analyzeBtn" disabled>Analyze project <span>→</span></button></div>
+        </div>
+        <div class="notice subtle-notice"><span class="notice-icon">i</span><div><strong>What should the ZIP contain?</strong><p>Include your Android project files, such as Gradle build files and the app source folder. Do not upload passwords, signing keys, or private credentials.</p></div></div>
+      </section>
+
+      <section class="page" id="page-configure">
+        <div class="page-heading"><div class="eyebrow">BUILD OPTIONS</div><h1>Build configuration</h1><p class="muted">Choose the settings for your Android package.</p></div>
+        <div class="content-card"><div class="card-title"><div><h2>Application details</h2><p class="muted">These are preview controls; settings are not sent to a build server.</p></div></div>
+          <div class="form-grid"><label>Application name<input type="text" placeholder="My Android App"></label><label>Package ID<input type="text" placeholder="com.example.myapp"></label><label>Version name<input type="text" placeholder="1.0.0"></label><label>Version code<input type="number" value="1" min="1"></label><label>Build format<select><option>APK</option><option>AAB</option></select></label><label>Build type<select><option>Debug</option><option>Release</option></select></label></div>
+          <div class="option-row"><div><strong>Build variants</strong><p class="muted">Select a target build profile.</p></div><div class="variant-options"><button class="variant selected" data-variant>Debug</button><button class="variant" data-variant>Release</button></div></div>
+          <div class="card-footer"><span class="muted small">Real build settings require backend integration.</span><button class="primary-button" data-go="progress">Continue →</button></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-progress">
+        <div class="page-heading"><div class="eyebrow">BUILD STATUS</div><h1>Build progress</h1><p class="muted">Track the status of your Android build.</p></div>
+        <div class="empty-panel large-empty"><div class="empty-icon">◷</div><strong>No active build</strong><p>Build workers are not connected yet. Once configured, your build progress will appear here.</p><button class="secondary-button" data-go="upload">Upload a project</button></div>
+      </section>
+
+      <section class="page" id="page-logs">
+        <div class="page-heading"><div class="eyebrow">DIAGNOSTICS</div><h1>Build logs</h1><p class="muted">Build output and diagnostic messages.</p></div>
+        <div class="log-panel"><div class="log-toolbar"><strong>Console output</strong><span class="preview-pill">No build selected</span></div><div class="log-empty">Waiting for a build to start…<br><span>Backend connection required to stream logs.</span></div></div>
+      </section>
+
+      <section class="page" id="page-history">
+        <div class="page-heading"><div class="eyebrow">YOUR BUILDS</div><h1>Build history</h1><p class="muted">Review your previous APK and AAB builds.</p></div>
+        <div class="empty-panel"><div class="empty-icon">▤</div><strong>No builds found</strong><p>Build history will be available after database and backend integration.</p></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-heading"><div class="eyebrow">PREFERENCES</div><h1>Settings</h1><p class="muted">Manage local interface preferences and future integrations.</p></div>
+        <div class="content-card"><div class="option-row"><div><strong>Appearance</strong><p class="muted">Switch between dark and light theme.</p></div><button class="secondary-button" id="themeSetting">Toggle theme</button></div><div class="divider"></div><label class="full-label">Backend API URL<input id="apiUrl" type="url" placeholder="https://your-domain.example/api"></label><p class="muted small" id="apiSaved">No backend URL configured.</p><div class="card-footer"><span class="muted small">This preview does not contact an API.</span><button class="primary-button" id="saveApi">Save preview setting</button></div></div>
+      </section>
+
+      <section class="page" id="page-help">
+        <div class="page-heading"><div class="eyebrow">SUPPORT</div><h1>Help & documentation</h1><p class="muted">Learn what is available in this starter version.</p></div>
+        <div class="content-card help-content"><h2>What works right now?</h2><p>Navigation, theme switching, basic ZIP file selection checks and interface previews.</p><h2>What still needs to be built?</h2><p>Secure user authentication, PHP API endpoints, database tables, server-side ZIP validation, isolated Android build workers, build queue, real-time logs and APK download storage.</p><h2>Important security note</h2><p>Never put database passwords, FTP credentials, signing keys or API secrets in frontend JavaScript. Keep secrets on the server and in GitHub Actions Secrets.</p></div>
+      </section>
+      <footer class="footer"><span>© 2026 VEX Universal APK Builder</span><span>Frontend starter · Backend pending</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="app.js"></script>
+</body>
+</html>

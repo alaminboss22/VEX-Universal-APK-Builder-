@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261127k">
-  <link rel="stylesheet" href="auth.css?v=20261127k">
+  <link rel="stylesheet" href="styles.css?v=20261127l">
+  <link rel="stylesheet" href="auth.css?v=20261127l">
 </head>
 <body>
   <div class="app-shell">
@@ -74,27 +74,36 @@
       </section>
 
       <section class="page" id="page-configure">
-        <div class="page-heading"><div class="eyebrow">BUILD OPTIONS</div><h1>Build configuration</h1><p class="muted">Choose the settings for your Android package.</p></div>
-        <div class="content-card"><div class="card-title"><div><h2>Application details</h2><p class="muted">These are preview controls; settings are not sent to a build server.</p></div></div>
-          <div class="form-grid"><label>Application name<input type="text" placeholder="My Android App"></label><label>Package ID<input type="text" placeholder="com.example.myapp"></label><label>Version name<input type="text" placeholder="1.0.0"></label><label>Version code<input type="number" value="1" min="1"></label><label>Build format<select><option>APK</option><option>AAB</option></select></label><label>Build type<select><option>Debug</option><option>Release</option></select></label></div>
-          <div class="option-row"><div><strong>Build variants</strong><p class="muted">Select a target build profile.</p></div><div class="variant-options"><button class="variant selected" data-variant>Debug</button><button class="variant" data-variant>Release</button></div></div>
-          <div class="card-footer"><span class="muted small">Real build settings require backend integration.</span><button class="primary-button" data-go="progress">Continue →</button></div>
+        <div class="page-heading"><div class="eyebrow">BUILD OPTIONS</div><h1>Build configuration</h1><p class="muted">Choose an uploaded project and save real build settings.</p></div>
+        <div class="content-card">
+          <div class="card-title"><div><h2>Application details</h2><p class="muted">These settings will be saved with your build request.</p></div></div>
+          <div class="form-grid">
+            <label>Project to build<select id="buildProject"><option value="">Loading your projects…</option></select></label>
+            <label>Application name<input id="buildAppName" type="text" maxlength="80" placeholder="My Android App" required></label>
+            <label>Package ID<input id="buildPackage" type="text" maxlength="180" placeholder="com.example.myapp" required></label>
+            <label>Version name<input id="buildVersion" type="text" maxlength="32" value="1.0.0"></label>
+            <label>Version code<input id="buildVersionCode" type="number" value="1" min="1" max="2147483647"></label>
+            <label>Build format<select id="buildFormat"><option value="apk">APK</option><option value="aab">AAB</option></select></label>
+            <label>Build type<select id="buildType"><option value="debug">Debug</option><option value="release">Release</option></select></label>
+          </div>
+          <p class="error-text hidden" id="buildError"></p>
+          <div class="card-footer"><span class="muted small">Build requests are saved securely to your account.</span><button class="primary-button" id="startBuildBtn">Create build request →</button></div>
         </div>
       </section>
 
       <section class="page" id="page-progress">
-        <div class="page-heading"><div class="eyebrow">BUILD STATUS</div><h1>Build progress</h1><p class="muted">Track the status of your Android build.</p></div>
-        <div class="empty-panel large-empty"><div class="empty-icon"><i data-lucide="clock-3"></i></div><strong>No active build</strong><p>Build workers are not connected yet. Once configured, your build progress will appear here.</p><button class="secondary-button" data-go="upload">Upload a project</button></div>
+        <div class="page-heading"><div class="eyebrow">BUILD STATUS</div><h1>Build progress</h1><p class="muted">Live status of your saved build requests.</p></div>
+        <div class="content-card"><div id="buildProgressList" class="build-data-list"><p class="muted">Loading build status…</p></div></div>
       </section>
 
       <section class="page" id="page-logs">
-        <div class="page-heading"><div class="eyebrow">DIAGNOSTICS</div><h1>Build logs</h1><p class="muted">Build output and diagnostic messages.</p></div>
-        <div class="log-panel"><div class="log-toolbar"><strong>Console output</strong><span class="preview-pill">No build selected</span></div><div class="log-empty">Waiting for a build to start…<br><span>Backend connection required to stream logs.</span></div></div>
+        <div class="page-heading"><div class="eyebrow">DIAGNOSTICS</div><h1>Build logs</h1><p class="muted">Messages recorded for your build requests.</p></div>
+        <div class="log-panel"><div class="log-toolbar"><strong>Build output</strong><button class="text-button" id="refreshBuildLogs">Refresh</button></div><pre class="log-empty" id="buildLogOutput">Loading build logs…</pre></div>
       </section>
 
       <section class="page" id="page-history">
-        <div class="page-heading"><div class="eyebrow">YOUR BUILDS</div><h1>Build history</h1><p class="muted">Review your previous APK and AAB builds.</p></div>
-        <div class="empty-panel"><div class="empty-icon"><i data-lucide="archive"></i></div><strong>No builds found</strong><p>Build history will be available after database and backend integration.</p></div>
+        <div class="page-heading"><div class="eyebrow">YOUR BUILDS</div><h1>Build history</h1><p class="muted">Review your previous APK and AAB build requests.</p></div>
+        <div class="content-card"><div id="buildHistoryList" class="build-data-list"><p class="muted">Loading build history…</p></div></div>
       </section>
 
       <section class="page" id="page-settings">
@@ -111,7 +120,7 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="app.js?v=20261127k"></script>
-  <script src="auth.js?v=20261127k"></script>
+  <script src="app.js?v=20261127l"></script>
+  <script src="auth.js?v=20261127l"></script>
 </body>
 </html>

@@ -49,7 +49,7 @@ function go(page){
   icons();
 }
 window.goAfterAuth = page => go(page);
-$(".nav-link").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+$$(".nav-link").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
 $$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
 $("#menuBtn").addEventListener("click",()=>{const opened=$("#sidebar").classList.toggle("open");navBackdrop.classList.toggle("show",opened);$("#menuBtn").setAttribute("aria-expanded",String(opened));});
 let toastTimer;

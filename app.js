@@ -140,19 +140,29 @@ icons();
 
 async function loadBuildData(){
   if(document.body.dataset.authenticated!=="true") return;
-  const targets=["#buildProject","#buildProgressList","#buildHistoryList","#buildLogOutput"];
+  const projectSelect=$("#buildProject");
+  // Load projects independently so a missing build-table migration cannot leave this dropdown empty.
+  try{
+    const projectResponse=await fetch("/api/projects.php",{credentials:"same-origin",cache:"no-store"});
+    const projectData=await projectResponse.json();
+    if(!projectResponse.ok||!projectData.ok) throw new Error(projectData.error||"Could not load uploaded projects.");
+    if(projectSelect){
+      const selected=projectSelect.value;
+      projectSelect.replaceChildren(new Option("Select an uploaded project",""));
+      projectData.projects.forEach(p=>projectSelect.add(new Option(p.project_name+" (#"+p.id+")",String(p.id))));
+      if(selected) projectSelect.value=selected;
+      if(!projectData.projects.length) projectSelect.replaceChildren(new Option("Upload a project first",""));
+    }
+  }catch(err){
+    if(projectSelect) projectSelect.replaceChildren(new Option("Could not load projects — tap Refresh or reload",""));
+    const buildError=$("#buildError");
+    if(buildError){buildError.textContent=err.message;buildError.classList.remove("hidden");}
+  }
+  // Build history is loaded separately; errors here must not break project selection.
   try{
     const response=await fetch("/api/builds.php",{credentials:"same-origin",cache:"no-store"});
     const data=await response.json();
     if(!response.ok||!data.ok) throw new Error(data.error||"Could not load build data.");
-    const projectSelect=$(targets[0]);
-    if(projectSelect){
-      const selected=projectSelect.value;
-      projectSelect.replaceChildren(new Option("Select an uploaded project",""));
-      data.projects.forEach(p=>projectSelect.add(new Option(p.project_name+" (#"+p.id+")",String(p.id))));
-      if(selected) projectSelect.value=selected;
-      if(!data.projects.length) projectSelect.replaceChildren(new Option("Upload a project first",""));
-    }
     const renderList=(selector,items,empty)=>{
       const el=$(selector);if(!el)return;el.replaceChildren();
       if(!items.length){const p=document.createElement("p");p.className="muted";p.textContent=empty;el.appendChild(p);return;}
@@ -167,9 +177,9 @@ async function loadBuildData(){
     renderList("#buildProgressList",data.builds.filter(b=>["queued","building"].includes(b.status)),"No active build requests.");
     renderList("#buildHistoryList",data.builds,"No build requests yet.");
     const log=$("#buildLogOutput");
-    if(log){log.textContent=data.builds.length?data.builds.map(b=>"Build #"+b.id+" ["+b.status+"] · "+b.project_name+"\n"+(b.log_text||"No log messages yet.")).join("\n\n------------------------------\n\n"):"No build logs yet.";}
+    if(log){log.textContent=data.builds.length?data.builds.map(b=>"Build #"+b.id+" ["+b.status+"] · "+b.project_name+"\\n"+(b.log_text||"No log messages yet.")).join("\\n\\n------------------------------\\n\\n"):"No build logs yet.";}
   }catch(err){
-    targets.forEach(sel=>{const el=$(sel);if(el)el.textContent=err.message;});
+    ["#buildProgressList","#buildHistoryList","#buildLogOutput"].forEach(sel=>{const el=$(sel);if(el)el.textContent=err.message;});
   }
 }
 $("#startBuildBtn")?.addEventListener("click",async()=>{

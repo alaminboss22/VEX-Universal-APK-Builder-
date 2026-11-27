@@ -1,3 +1,5 @@
+const systemTheme=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)");
+if(systemTheme){document.body.classList.toggle("light",systemTheme.matches);systemTheme.addEventListener?.("change",e=>{if(!document.body.dataset.themeManual)document.body.classList.toggle("light",e.matches);});}
 const pages = ["dashboard","upload","configure","progress","logs","history","settings","help"];
 const labels = {dashboard:"Dashboard",upload:"Upload project",configure:"Build configuration",progress:"Build progress",logs:"Build logs",history:"Build history",settings:"Settings",help:"Help & documentation"};
 const $ = s => document.querySelector(s);
@@ -23,7 +25,7 @@ $$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
 $("#menuBtn").addEventListener("click",()=>{const opened=$("#sidebar").classList.toggle("open");navBackdrop.classList.toggle("show",opened);});
 let toastTimer;
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600);}
-function setTheme(){document.body.classList.toggle("light");}
+function setTheme(){const light=!document.body.classList.contains("light");document.body.classList.toggle("light",light);document.body.dataset.themeManual=light?"light":"dark";}
 $("#themeBtn").addEventListener("click",setTheme);
 $("#themeSetting").addEventListener("click",setTheme);
 $$("[data-variant]").forEach(b=>b.addEventListener("click",()=>{$$("[data-variant]").forEach(x=>x.classList.toggle("selected",x===b));}));

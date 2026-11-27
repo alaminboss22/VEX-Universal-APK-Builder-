@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261127e">
-  <link rel="stylesheet" href="auth.css?v=20261127e">
+  <link rel="stylesheet" href="styles.css?v=20261127f">
+  <link rel="stylesheet" href="auth.css?v=20261127f">
 </head>
 <body>
   <div class="app-shell">
@@ -20,26 +20,26 @@
       </a>
       <div class="workspace-label">WORKSPACE</div>
       <nav class="nav-list" aria-label="Main navigation">
-        <button class="nav-link active" data-page="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
-        <button class="nav-link" data-page="upload"><span class="nav-icon">⇧</span>Upload project</button>
-        <button class="nav-link" data-page="configure"><span class="nav-icon">⚙</span>Build configuration</button>
-        <button class="nav-link" data-page="progress"><span class="nav-icon">◷</span>Build progress</button>
-        <button class="nav-link" data-page="logs"><span class="nav-icon">≡</span>Build logs</button>
-        <button class="nav-link" data-page="history"><span class="nav-icon">◴</span>Build history</button>
+        <button class="nav-link active" data-page="dashboard"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>Dashboard</button>
+        <button class="nav-link" data-page="upload"><span class="nav-icon"><i data-lucide="cloud-upload"></i></span>Upload project</button>
+        <button class="nav-link" data-page="configure"><span class="nav-icon"><i data-lucide="sliders-horizontal"></i></span>Build configuration</button>
+        <button class="nav-link" data-page="progress"><span class="nav-icon"><i data-lucide="activity"></i></span>Build progress</button>
+        <button class="nav-link" data-page="logs"><span class="nav-icon"><i data-lucide="terminal"></i></span>Build logs</button>
+        <button class="nav-link" data-page="history"><span class="nav-icon"><i data-lucide="history"></i></span>Build history</button>
       </nav>
       <div class="workspace-label lower-label">PREFERENCES</div>
       <nav class="nav-list">
-        <button class="nav-link" data-page="settings"><span class="nav-icon">⚑</span>Settings</button>
-        <button class="nav-link" data-page="help"><span class="nav-icon">?</span>Help & documentation</button>
+        <button class="nav-link" data-page="settings"><span class="nav-icon"><i data-lucide="settings-2"></i></span>Settings</button>
+        <button class="nav-link" data-page="help"><span class="nav-icon"><i data-lucide="circle-help"></i></span>Help & documentation</button>
       </nav>
       <div class="sidebar-bottom"><span class="status-dot"></span><span>Frontend preview</span><small>Backend not connected</small></div>
     </aside>
 
     <main class="main-area">
       <header class="topbar">
-        <button class="icon-button menu-button" id="menuBtn" aria-label="Open menu">☰</button>
+        <button class="icon-button menu-button" id="menuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
         <div class="breadcrumbs">Workspace <span>/</span> <strong id="pageCrumb">Dashboard</strong></div>
-        <div class="top-actions"><span class="preview-pill"><i></i> Preview mode</span><button class="icon-button" id="themeBtn" aria-label="Toggle theme">◐</button><div class="avatar">VX</div></div>
+        <div class="top-actions"><span class="preview-pill"><i></i> Preview mode</span><button class="icon-button" id="themeBtn" aria-label="Toggle theme"><i data-lucide="sun-moon"></i></button><div class="avatar">VX</div></div>
       </header>
 
       <section class="page active" id="page-dashboard">
@@ -52,18 +52,18 @@
         </div>
         <div class="section-heading"><div><h2>Get started</h2><p class="muted">Follow these steps to prepare your first build.</p></div></div>
         <div class="steps-grid">
-          <button class="step-card" data-go="upload"><span class="step-number">01</span><span class="step-symbol">⇧</span><strong>Upload project</strong><p>Choose a ZIP archive containing your Android project.</p><span class="step-link">Choose a file →</span></button>
-          <button class="step-card" data-go="configure"><span class="step-number">02</span><span class="step-symbol">⚙</span><strong>Configure build</strong><p>Set the app details and build options.</p><span class="step-link">Configure →</span></button>
-          <button class="step-card" data-go="progress"><span class="step-number">03</span><span class="step-symbol">▣</span><strong>Build APK</strong><p>Build execution will be enabled after backend setup.</p><span class="step-link">View status →</span></button>
+          <button class="step-card" data-go="upload"><span class="step-number">01</span><span class="step-symbol"><i data-lucide="upload"></i></span><strong>Upload project</strong><p>Choose a ZIP archive containing your Android project.</p><span class="step-link">Choose a file →</span></button>
+          <button class="step-card" data-go="configure"><span class="step-number">02</span><span class="step-symbol"><i data-lucide="sliders-horizontal"></i></span><strong>Configure build</strong><p>Set the app details and build options.</p><span class="step-link">Configure →</span></button>
+          <button class="step-card" data-go="progress"><span class="step-number">03</span><span class="step-symbol"><i data-lucide="package-check"></i></span><strong>Build APK</strong><p>Build execution will be enabled after backend setup.</p><span class="step-link">View status →</span></button>
         </div>
         <div class="section-heading"><div><h2>Recent activity</h2><p class="muted">Your latest project activity will appear here.</p></div><button class="text-button" data-go="history">View history →</button></div>
-        <div class="empty-panel"><div class="empty-icon">◷</div><strong>No activity yet</strong><p>Your build activity will show here when the backend is connected.</p></div>
+        <div class="empty-panel"><div class="empty-icon"><i data-lucide="clock-3"></i></div><strong>No activity yet</strong><p>Your build activity will show here when the backend is connected.</p></div>
       </section>
 
       <section class="page" id="page-upload">
         <div class="page-heading"><div class="eyebrow">PROJECT SETUP</div><h1>Upload your project</h1><p class="muted">Select a ZIP archive of your Android project.</p></div>
         <div class="content-card"><div class="card-title"><div><h2>Project archive</h2><p class="muted">ZIP format · Maximum preview selection size: 100 MB</p></div><span class="step-number">01 / 03</span></div>
-          <label class="dropzone" id="dropzone" for="zipInput"><span class="upload-symbol">⇧</span><strong>Drop your ZIP file here</strong><span>or <u>browse files</u> on your device</span><small>Only .zip files are accepted in this frontend preview.</small><input id="zipInput" type="file" accept=".zip,application/zip"></label>
+          <label class="dropzone" id="dropzone" for="zipInput"><span class="upload-symbol"><i data-lucide="cloud-upload"></i></span><strong>Drop your ZIP file here</strong><span>or <u>browse files</u> on your device</span><small>Only .zip files are accepted in this frontend preview.</small><input id="zipInput" type="file" accept=".zip,application/zip"></label>
           <div class="file-result hidden" id="fileResult"><span class="file-badge">ZIP</span><div class="file-meta"><strong id="fileName">project.zip</strong><small id="fileSize">0 KB</small><small id="fileValidation"></small></div><button class="icon-button remove-button" id="removeFile" aria-label="Remove file">×</button></div>
           <p class="error-text hidden" id="uploadError"></p>
           <div class="card-footer"><span class="muted small">Your file is not uploaded to a server yet.</span><button class="primary-button" id="analyzeBtn" disabled>Analyze project <span>→</span></button></div>
@@ -82,7 +82,7 @@
 
       <section class="page" id="page-progress">
         <div class="page-heading"><div class="eyebrow">BUILD STATUS</div><h1>Build progress</h1><p class="muted">Track the status of your Android build.</p></div>
-        <div class="empty-panel large-empty"><div class="empty-icon">◷</div><strong>No active build</strong><p>Build workers are not connected yet. Once configured, your build progress will appear here.</p><button class="secondary-button" data-go="upload">Upload a project</button></div>
+        <div class="empty-panel large-empty"><div class="empty-icon"><i data-lucide="clock-3"></i></div><strong>No active build</strong><p>Build workers are not connected yet. Once configured, your build progress will appear here.</p><button class="secondary-button" data-go="upload">Upload a project</button></div>
       </section>
 
       <section class="page" id="page-logs">
@@ -92,7 +92,7 @@
 
       <section class="page" id="page-history">
         <div class="page-heading"><div class="eyebrow">YOUR BUILDS</div><h1>Build history</h1><p class="muted">Review your previous APK and AAB builds.</p></div>
-        <div class="empty-panel"><div class="empty-icon">▤</div><strong>No builds found</strong><p>Build history will be available after database and backend integration.</p></div>
+        <div class="empty-panel"><div class="empty-icon"><i data-lucide="archive"></i></div><strong>No builds found</strong><p>Build history will be available after database and backend integration.</p></div>
       </section>
 
       <section class="page" id="page-settings">
@@ -109,7 +109,7 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="app.js?v=20261127e"></script>
-  <script src="auth.js?v=20261127e"></script>
+  <script src="app.js?v=20261127f"></script>
+  <script src="auth.js?v=20261127f"></script>
 </body>
 </html>

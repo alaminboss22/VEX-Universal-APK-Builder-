@@ -48,7 +48,7 @@ function setTheme(){
 $("#themeBtn").addEventListener("click",setTheme);
 $("#themeSetting").addEventListener("click",setTheme);
 $$("[data-variant]").forEach(b=>b.addEventListener("click",()=>{$$("[data-variant]").forEach(x=>x.classList.toggle("selected",x===b));}));
-let selectedFile=null;
+let selectedFile=null, serverUploadLimit=100*1024*1024;
 const input=$("#zipInput"), drop=$("#dropzone"), result=$("#fileResult"), error=$("#uploadError"), analyze=$("#analyzeBtn");
 function showError(msg){error.textContent=msg;error.classList.remove("hidden");}
 function clearError(){error.textContent="";error.classList.add("hidden");}
@@ -58,11 +58,11 @@ function acceptFile(file){
   if(!file)return;
   if(!file.name.toLowerCase().endsWith(".zip")){selectedFile=null;result.classList.add("hidden");analyze.disabled=true;showError("Unsupported file. Please choose a .zip archive.");return;}
   if(file.size===0){showError("This ZIP file is empty.");return;}
-  if(file.size>100*1024*1024){showError("File exceeds the 100 MB frontend preview limit.");return;}
+  if(file.size>serverUploadLimit){showError(`File exceeds the current server limit (${formatSize(serverUploadLimit)}).`);return;}
   selectedFile=file;
   $("#fileName").textContent=file.name;
   $("#fileSize").textContent=formatSize(file.size);
-  $("#fileValidation").textContent="Extension and size checks passed · Archive not inspected";
+  $("#fileValidation").textContent="Ready for secure server-side ZIP validation";
   result.classList.remove("hidden");analyze.disabled=false;
 }
 input.addEventListener("change",e=>acceptFile(e.target.files[0]));
@@ -70,7 +70,42 @@ $("#removeFile").addEventListener("click",()=>{selectedFile=null;input.value="";
 ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("dragging");}));
 ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("dragging");}));
 drop.addEventListener("drop",e=>acceptFile(e.dataTransfer.files[0]));
-analyze.addEventListener("click",()=>{if(!selectedFile)return;if(document.body.dataset.authenticated!=="true"){if(window.VEX_REQUIRE_AUTH)window.VEX_REQUIRE_AUTH("upload");return;}toast("Account ready. Secure project upload API is the next step; file has not been uploaded yet.");});
+async function loadProjects(){
+  const list=$("#projectList"); if(!list) return;
+  if(document.body.dataset.authenticated!=="true"){list.innerHTML='<p class="muted small">Sign in to see your saved projects.</p>';return;}
+  list.innerHTML='<p class="muted small">Loading projects…</p>';
+  try{
+    const response=await fetch("/api/projects.php",{credentials:"same-origin",cache:"no-store"});
+    const data=await response.json();
+    if(!response.ok||!data.ok) throw new Error(data.error||"Could not load projects.");
+    if(Number.isFinite(data.max_upload_bytes)&&data.max_upload_bytes>0){serverUploadLimit=data.max_upload_bytes;if(selectedFile&&selectedFile.size>serverUploadLimit){analyze.disabled=true;showError("Selected file exceeds the server upload limit.");}}
+    if(!data.projects.length){list.innerHTML='<p class="muted small">No uploaded projects yet.</p>';return;}
+    list.innerHTML=data.projects.map(p=>'<article class="project-row"><span class="project-file-icon">ZIP</span><span class="project-info"><strong></strong><small></small></span><span class="project-status"></span></article>').join("");
+    [...list.querySelectorAll(".project-row")].forEach((row,i)=>{const p=data.projects[i];row.querySelector("strong").textContent=p.project_name;row.querySelector("small").textContent="Project #"+p.id+" · "+p.created_at;row.querySelector(".project-status").textContent=p.status;});
+  }catch(err){list.innerHTML="";const p=document.createElement("p");p.className="error-text";p.textContent=err.message;list.appendChild(p);}
+}
+function uploadProject(){
+  if(!selectedFile)return;
+  if(document.body.dataset.authenticated!=="true"){if(window.VEX_REQUIRE_AUTH)window.VEX_REQUIRE_AUTH("upload");return;}
+  if(selectedFile.size>serverUploadLimit){showError("File exceeds the current server upload limit.");return;}
+  clearError(); analyze.disabled=true;
+  const progress=$("#uploadProgress"),bar=$("#uploadProgressBar"),label=$("#uploadProgressText");
+  progress.classList.remove("hidden");bar.style.width="0%";label.textContent="Preparing secure upload…";
+  const form=new FormData();form.append("project_file",selectedFile);form.append("csrf_token",window.VEX_AUTH?.csrfToken||"");
+  const xhr=new XMLHttpRequest();xhr.open("POST","/api/projects.php");xhr.withCredentials=true;
+  xhr.upload.addEventListener("progress",e=>{if(e.lengthComputable){const pct=Math.round(e.loaded/e.total*100);bar.style.width=pct+"%";label.textContent="Uploading… "+pct+"%";}});
+  xhr.onload=async()=>{let data={};try{data=JSON.parse(xhr.responseText);}catch(e){}
+    if(xhr.status>=200&&xhr.status<300&&data.ok){bar.style.width="100%";label.textContent="Upload complete";toast("ZIP uploaded and saved to your account.");selectedFile=null;input.value="";result.classList.add("hidden");await loadProjects();}
+    else{showError(data.error||"Upload failed. Please try again.");label.textContent="Upload failed";}
+    analyze.disabled=!selectedFile;
+  };
+  xhr.onerror=()=>{showError("Network error. Check your connection and try again.");label.textContent="Upload failed";analyze.disabled=false;};
+  xhr.send(form);
+}
+analyze.addEventListener("click",uploadProject);
+$("#refreshProjects")?.addEventListener("click",loadProjects);
+window.addEventListener("vex:authenticated",loadProjects);
+if(document.body.dataset.authenticated==="true") loadProjects();
 $("#saveApi").addEventListener("click",()=>{const v=$("#apiUrl").value.trim();if(v&&!/^https?:\/\/.+/i.test(v)){toast("Enter a valid http:// or https:// URL.");return;}$("#apiSaved").textContent="Preview setting noted. No connection test was made.";toast("Setting saved for this page session.");});
 icons();
 

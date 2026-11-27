@@ -110,7 +110,7 @@ if (!move_uploaded_file($file['tmp_name'], $destination)) reply(500, ['ok'=>fals
 @chmod($destination, 0640);
 $projectName = trim(pathinfo($original, PATHINFO_FILENAME));
 $projectName = preg_replace('/[^\pL\pN _.-]/u', '', $projectName) ?? 'Android project';
-$projectName = mb_substr($projectName, 0, 120);
+$projectName = function_exists('mb_substr') ? mb_substr($projectName, 0, 120) : substr($projectName, 0, 120);
 if ($projectName === '') $projectName = 'Android project';
 try {
     $stmt = $pdo->prepare("INSERT INTO projects (user_id, project_name, source_zip, status) VALUES (:uid, :name, :file, 'uploaded')");

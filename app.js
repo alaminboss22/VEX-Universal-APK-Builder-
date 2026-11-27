@@ -171,7 +171,9 @@ async function loadBuildData(){
         const title=document.createElement("strong");title.textContent="#"+b.id+" · "+b.project_name;
         const meta=document.createElement("small");meta.textContent=(b.build_format||"APK").toUpperCase()+" · "+(b.build_type||"debug")+" · "+b.created_at;
         const status=document.createElement("span");status.className="project-status";status.textContent=b.status;
-        card.append(title,meta,status);el.appendChild(card);
+        card.append(title,meta,status);
+        if(b.status==="success"&&b.apk_path){const link=document.createElement("a");link.href="/api/worker.php?download="+encodeURIComponent(b.id);link.className="text-button";link.textContent="Download "+(b.build_format||"apk").toUpperCase();link.setAttribute("download","");card.appendChild(link);}
+        el.appendChild(card);
       });
     };
     renderList("#buildProgressList",data.builds.filter(b=>["queued","building"].includes(b.status)),"No active build requests.");

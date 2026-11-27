@@ -231,3 +231,16 @@ body[data-theme-manual="dark"] .topbar{background:#0b1020ee;border-color:#202d45
 body[data-theme-manual="dark"] .dropzone{background:#121d31;color:#e6e2ff}
 body[data-theme-manual="dark"] .form-grid input,body[data-theme-manual="dark"] .form-grid select,body[data-theme-manual="dark"] .full-label input{background:#101622;color:#f4f7ff}
 .nav-icon svg,.step-symbol svg,.upload-symbol svg,.empty-icon svg{width:20px;height:20px;stroke-width:1.8}
+
+
+/* Live server status indicators */
+.sidebar-bottom.server-status{display:grid;grid-template-columns:10px 1fr;align-items:center;column-gap:9px}
+.sidebar-bottom.server-status .status-dot{grid-row:1 / span 2;width:9px;height:9px;border-radius:50%;background:#999;box-shadow:0 0 0 4px #9992}
+.sidebar-bottom.server-status #sidebarStatusText{font-weight:700}
+.sidebar-bottom.server-status #sidebarStatusDetail{grid-column:2;font-size:10px;color:var(--muted)}
+.server-status-pill{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.server-status-pill i{display:block;width:8px;height:8px;border-radius:50%;background:#999}
+.server-status-pill.is-checking i{background:#999}
+.server-status-pill.is-online i,.sidebar-bottom.server-status.is-online .status-dot{background:#16a36a;box-shadow:0 0 0 4px #16a36a22}
+.server-status-pill.is-offline i,.sidebar-bottom.server-status.is-offline .status-dot{background:#dc4545;box-shadow:0 0 0 4px #dc454522}
+@media(max-width:480px){.server-status-pill{font-size:11px;padding:6px 8px}.top-actions{gap:6px}}

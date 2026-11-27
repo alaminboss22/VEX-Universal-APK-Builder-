@@ -18,7 +18,7 @@
     </div>`;
   document.body.appendChild(gate);
   let mode = 'login', csrf = '', pendingPage = 'upload', authRequested = false, resetToken = new URLSearchParams(location.search).get('reset') || '';
-  window.VEX_REQUIRE_AUTH = page => { pendingPage = page || 'upload'; authRequested = true; gate.classList.remove('auth-hidden'); $('authEmail').focus(); };
+  window.VEX_AUTH = { get csrfToken(){ return csrf; }, get authenticated(){ return document.body.dataset.authenticated === 'true'; } };\n  window.VEX_REQUIRE_AUTH = page => { pendingPage = page || 'upload'; authRequested = true; gate.classList.remove('auth-hidden'); $('authEmail').focus(); };
   const $ = id => document.getElementById(id);
   const message = (text, success=false) => { $('authMessage').textContent=text; $('authMessage').classList.toggle('success',success); };
   $('passwordToggle').addEventListener('click', () => {
@@ -66,7 +66,7 @@
   }
   function enter(user) {
     gate.classList.add('auth-hidden');
-    document.body.dataset.authenticated='true';
+    document.body.dataset.authenticated='true';\n    window.dispatchEvent(new CustomEvent('vex:authenticated'));
     const top=document.querySelector('.top-actions');
     if(top && !$('authLogout')) {
       const who=document.createElement('span');who.id='authUserEmail';who.className='muted';who.style.cssText='font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis';who.textContent=user.email;top.insertBefore(who,top.firstChild);
